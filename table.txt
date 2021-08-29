@@ -1,0 +1,80 @@
+ALTER TABLE mig_pmptxft MODIFY COLUMN VFNAME varchar(16) NOT NULL;
+INSERT INTO mig_pmptxft (VTITLE, VFNAME, VLNAME, DDOB)
+select IF(patientsex ='M', "MR","MISS") as Title, 
+`patient firstname` as VFNAME, 
+`patient lastname` as VLNAME,
+ifnull(patientdob,"1900-01-01") AS DDOB
+From patients;
+
+update mig_pmptxft INSERT INTO mig_pmptxft(VFNAME) 
+select
+`patient firstname`
+from patients;
+
+SELECT 
+CASE WHEN patientsex = 'M' THEN 'MALE'
+WHEN patientsex = 'F' THEN 'FEMALE'
+ELSE 'OTHER' 
+END AS VSEX 
+FROM patients;
+
+SELECT 
+CASE WHEN `patient marital status` = 'Married' THEN 'MR'
+WHEN `patient marital status` = 'Widow' THEN 'WD'
+WHEN `patient marital status` = 'Single' THEN 'S'
+WHEN `patient marital status` = 'Divorced' THEN 'DIV'
+WHEN `patient marital status` = 'Separated' THEN 'LS'
+WHEN `patient marital status` = 'Partnered' THEN 'PAT'
+WHEN `patient marital status` = 'Patnered' THEN 'PAT'
+ELSE 'UN' 
+END AS VSTATUS 
+FROM patients;
+
+SELECT substring(`patient address1`,1,55) as VADDRESS1
+FROM patients;
+
+SELECT substring(`patient address2`,1,55) as VADDRESS2
+FROM patients;
+
+SELECT `patient city` AS VCITY
+FROM patients;
+
+SELECT substring(`patient state`,1,2) AS VSTATE
+FROM patients;
+
+SELECT substring(replace(replace(replace(`patient zip`,'-',''),',',''),' ',''),1,9) as VZIPCODE
+from patients;
+
+SELECT substring(replace(replace(replace(`patient homephone`,'-',''),',',''),' ',''),1,10) as VPHONE
+from patients;
+
+SELECT substring(replace(replace(replace(`patient ssn`,'-',''),',',''),' ',''),1,9) as VSSN
+from patients;
+
+SELECT `patient email` AS VEMAIL
+FROM patients;
+
+SELECT `patient mobile no` AS VCELLNO
+FROM patients;
+
+SELECT `claim ref prvdr npi no` AS IREFPRVID
+FROM patients;
+
+SELECT `patient workphone` AS VWPHONE
+FROM patients;
+
+-- SELECT `ptnt emrgncy cntct rltnshp` as VRRELATION
+-- from patients;
+
+SELECT `guarantor frstnm` AS VRFNAME,
+`guarantor lastnm` AS VRLNAME, 
+substring(`guarantor addr`,1,30) as VRADDRESS1, 
+substr(`guarantor addr2`,1,30) as VRADDRESS2,
+`guarantor city` as VRCITY,
+substring(`guarantor state`,1,2) as VRSTATE,
+substring(replace(replace(replace(`guarantor zip`,'-',''),',',''),' ',''),1,9) as VRZIPCODE
+-- substring(replace(replace(replace(replace(,'-',''),'(',''),')',''),' ',''),1,10) as VRPHONE
+FROM patients;
+
+select m.VFNAME from mig_pmptxft as m;
+
